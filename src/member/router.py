@@ -2,10 +2,10 @@ from fastapi import APIRouter
 
 
 router = APIRouter(
-    prefix="/users"
+    prefix="/members"
 )
 
 
 @router.get("/hello")
 def hello():
-    return "Hello user"
+    return "Hello member"

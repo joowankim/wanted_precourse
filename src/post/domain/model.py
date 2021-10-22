@@ -2,7 +2,7 @@ import uuid
 from dataclasses import dataclass
 
 from pydantic import BaseModel
-from typing import Dict
+from typing import Dict, List
 
 
 @dataclass(frozen=True)
@@ -13,9 +13,8 @@ class Document:
 
 class Post(BaseModel):
     post_id: str
-    author_name: str
+    pen_name: str
     document: Document
-    is_deleted: bool = False
 
     def apply(self, changes: Document) -> None:
         self.document = changes
@@ -38,36 +37,41 @@ class BulletinBoard:
     def delete(self, post: Post) -> None:
         del self.posts[post.post_id]
 
+    def get_all_posts(self) -> List[Post]:
+        return list(self.posts.values())
 
-board = BulletinBoard(posts=dict())
+    def get(self, post_id: str):
+        return self.posts[post_id]
 
 
 @dataclass(frozen=True)
 class Author:
-    user_id: str
-    name: str
+    member_id: str
+    pen_name: str
+    board: BulletinBoard
 
     def write(self, document: Document) -> None:
         post_id = BulletinBoard.generate_post_id()
-        board.add(
+        self.board.add(
             Post(
                 post_id=post_id,
-                author_name=self.name,
+                pen_name=self.pen_name,
                 document=document
             )
         )
 
     def update(self, post: Post, changes: Document) -> None:
-        if post.author_name == self.name:
+        if post.pen_name == self.pen_name:
             post.apply(changes)
-            board.update(post)
+            self.board.update(post)
             # publish post updated event
         else:
             raise Exception
 
     def delete(self, post: Post) -> None:
-        if post.author_name == self.name:
-            board.delete(post)
+        if post.pen_name == self.pen_name:
+            self.board.delete(post)
             # publish post deleted event
         else:
             raise Exception
+

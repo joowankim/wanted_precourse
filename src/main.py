@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 
 import post
-import user
+import member
 
 app = FastAPI()
 app.include_router(post.router)
-app.include_router(user.router)
+app.include_router(member.router)
 
 
 @app.get("/")
