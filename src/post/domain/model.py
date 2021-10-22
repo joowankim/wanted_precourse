@@ -66,6 +66,7 @@ class Author:
             self.board.update(post)
             # publish post updated event
         else:
+            # todo: change to not author exception
             raise Exception
 
     def delete(self, post: Post) -> None:
@@ -73,5 +74,6 @@ class Author:
             self.board.delete(post)
             # publish post deleted event
         else:
+            # todo: change to not author exception
             raise Exception
 

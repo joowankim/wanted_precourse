@@ -1,6 +1,6 @@
 from assertpy import assert_that
 
-from src.post.domain.model import Post, Document, Author, BulletinBoard
+from src.post.domain.model import Document, Author, BulletinBoard
 
 
 def test_add_post():
@@ -9,6 +9,7 @@ def test_add_post():
     document = Document(title="title", content="description")
 
     author.write(document)
+    # todo: check post created event
 
     actual_posts = board.get_all_posts()
     expected_posts_length = 1
@@ -32,6 +33,7 @@ def test_post_updated_by_author():
 
     changes = Document(title="title", content="content")
     author.update(post, changes)
+    # todo: check post updated event
 
     actual_document = board.posts[post.post_id].document
     expected_document = changes
@@ -60,6 +62,7 @@ def test_post_deleted_by_author():
     post = board.get_all_posts()[0]
 
     author.delete(post)
+    # todo: check post deleted event
 
     actual_posts = board.get_all_posts()
     expected_posts = []
