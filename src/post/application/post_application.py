@@ -40,3 +40,6 @@ class PostApplication:
             content=content
         )
         self.board.update(changed)
+
+    def remove(self, post_id: str, member: str):
+        self.board.delete(requester=member, post_id=post_id)

@@ -6,7 +6,6 @@ from starlette import status
 
 from src.post.application.post_application import PostApplication, bulletin_board
 from src.post.domain.model.bulletin_board import BulletinBoard
-from src.post.domain.model.post import Post
 from src.post.domain.model.pre_published_post import PrePublishedPost
 from src.post.domain.view_model.displayed_post import DisplayedPost
 from src.security.router import authorize
@@ -48,7 +47,16 @@ def update_post(
         post_id: str,
         title: Optional[str] = Body(...),
         content: Optional[str] = Body(...),
-        application: PostApplication = Depends(post_application),
-        author: str = Depends(authorize)
+        author: str = Depends(authorize),
+        application: PostApplication = Depends(post_application)
 ):
     application.change(post_id=post_id, author=author, title=title, content=content)
+
+
+@router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+def remove_post(
+        post_id: str,
+        member: str = Depends(authorize),
+        application: PostApplication = Depends(post_application)
+):
+    application.remove(post_id=post_id, member=member)

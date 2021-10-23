@@ -1,7 +1,7 @@
 from assertpy import assert_that
 
 from src.post.application.post_application import PostApplication
-from src.post.domain.exception import NotExistPostException
+from src.post.domain.exception import NotExistPostException, NonAuthorException
 from src.post.domain.model.post import Post
 from src.post.domain.model.pre_published_post import PrePublishedPost
 
@@ -94,3 +94,28 @@ def test_change_with_not_exist_post(bulletin_board):
         .raises(NotExistPostException)\
         .when_called_with(post_id=changed.post_id, author=changed.author, title=changed.title, content=changed.content)
 
+
+def test_remove_with_author(bulletin_board):
+    application = PostApplication(board=bulletin_board)
+    author = "javkc"
+    pre_post = PrePublishedPost(title="title", content="content")
+    application.write(author=author, pre_post=pre_post)
+
+    post = application.list()[0]
+    application.remove(member=author, post_id=post.post_id)
+
+    posts = application.list()
+    assert_that(len(posts)).is_equal_to(0)
+
+
+def test_remove_with_non_author(bulletin_board):
+    application = PostApplication(board=bulletin_board)
+    author = "javkc"
+    pre_post = PrePublishedPost(title="title", content="content")
+    application.write(author=author, pre_post=pre_post)
+
+    post = application.list()[0]
+    non_author = "asdfasf"
+    assert_that(application.remove)\
+        .raises(NonAuthorException)\
+        .when_called_with(member=non_author, post_id=post.post_id)
