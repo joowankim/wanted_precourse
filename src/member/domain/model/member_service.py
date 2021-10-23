@@ -1,5 +1,6 @@
 import uuid
 
+from src.member.domain.exception import DuplicatedNicknameException
 from src.member.domain.model.member import Member
 from src.member.domain.model.membership_application import MembershipApplication
 from src.member.infra.member_repository import AbstractMemberRepository
@@ -23,5 +24,4 @@ class MemberService:
             )
             self.members.add(new_member)
         else:
-            # todo: change to duplicated nickname Exception
-            raise Exception
+            raise DuplicatedNicknameException
