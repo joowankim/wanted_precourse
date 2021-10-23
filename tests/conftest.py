@@ -8,7 +8,7 @@ from src.config.table_mapper_config import start_mappers
 
 pytest_plugins = [
     "tests.unit.fixtures.repository",
-    "tests.e2e.fixtures.client",
+    "tests.unit.fixtures.service",
 ]
 
 

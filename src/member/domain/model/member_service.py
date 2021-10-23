@@ -1,6 +1,6 @@
 import uuid
 
-from src.member.domain.exception import DuplicatedNicknameException
+from src.member.domain.exception import DuplicatedNicknameException, MemberNotFoundException
 from src.member.domain.model.member import Member
 from src.member.domain.model.membership_application import MembershipApplication
 from src.member.infra.member_repository import AbstractMemberRepository
@@ -25,3 +25,10 @@ class MemberService:
             self.members.add(new_member)
         else:
             raise DuplicatedNicknameException
+
+    def get_member(self, nickname: str) -> Member:
+        member = self.members.get_by_nickname(nickname=nickname)
+        if member:
+            return member
+        else:
+            raise MemberNotFoundException

@@ -1,4 +1,4 @@
-class NotFoundException(Exception):
+class MemberNotFoundException(Exception):
     pass
 
 

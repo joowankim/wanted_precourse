@@ -19,6 +19,10 @@ class AbstractMemberRepository(abc.ABC):
     def exists(self, nickname: str) -> bool:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_by_nickname(self, nickname: str) -> Member:
+        raise NotImplementedError
+
 
 def db_session():
     session = SessionLocal()
@@ -46,4 +50,7 @@ class MemberRepository(AbstractMemberRepository):
             return True
         else:
             return False
+
+    def get_by_nickname(self, nickname: str) -> Member:
+        return self.session.query(Member).filter_by(nickname=nickname).first()
 
