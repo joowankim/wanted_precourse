@@ -13,3 +13,11 @@ engine = create_engine(
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 metadata = MetaData()
+
+
+def db_session():
+    session = SessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()

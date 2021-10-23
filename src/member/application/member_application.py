@@ -1,9 +1,10 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
+from src.config.db_config import db_session
 from src.member.domain.model.member_service import MemberService
 from src.member.domain.model.membership_application import MembershipApplication
-from src.member.infra.member_repository import AbstractMemberRepository, MemberRepository, db_session
+from src.member.infra.member_repository import AbstractMemberRepository, MemberRepository
 
 
 def member_repository(session: Session = Depends(db_session)):

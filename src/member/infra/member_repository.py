@@ -24,14 +24,6 @@ class AbstractMemberRepository(abc.ABC):
         raise NotImplementedError
 
 
-def db_session():
-    session = SessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
-
-
 class MemberRepository(AbstractMemberRepository):
     def __init__(self, session: Session):
         self.session = session
