@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, Table
 from sqlalchemy.orm import mapper
 
-from src.config.DBConfig import metadata
-from src.member.domain import model
+from src.config.db_config import metadata
+from src.member.domain.model.member import Member
 
 
 members = Table(
@@ -15,4 +15,4 @@ members = Table(
 
 
 def start_member_mappers():
-    mapper(model.Member, members)
+    mapper(Member, members)

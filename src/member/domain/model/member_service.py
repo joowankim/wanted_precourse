@@ -1,39 +1,27 @@
 import uuid
-from dataclasses import dataclass
-from typing import Dict, Optional
 
-from pydantic import BaseModel
-
-
-@dataclass(frozen=True)
-class MembershipApplication:
-    nickname: str
-    password: str
+from src.member.domain.model.member import Member
+from src.member.domain.model.membership_application import MembershipApplication
+from src.member.infra.member_repository import AbstractMemberRepository
 
 
-@dataclass
-class Member:
-    member_id: str
-    nickname: str
-    password: str
-
-
-@dataclass(frozen=True)
 class MemberService:
-    members: Dict[str, Member]
+    def __init__(self, repo: AbstractMemberRepository):
+        self.members = repo
 
     @staticmethod
     def generate_member_id() -> str:
         return "member-" + str(uuid.uuid4())
 
     def register(self, application: MembershipApplication) -> None:
-        if self.members.get(application.nickname, None) is None:
+        if not self.members.exists(nickname=application.nickname):
             member_id = MemberService.generate_member_id()
-            self.members[application.nickname] = Member(
+            new_member = Member(
                 member_id=member_id,
                 password=application.password,
                 nickname=application.nickname
             )
+            self.members.add(new_member)
         else:
             # todo: change to duplicated nickname Exception
             raise Exception

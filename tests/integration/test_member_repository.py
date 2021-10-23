@@ -1,7 +1,7 @@
 from assertpy import assert_that
 
-from src.member.domain import model
-from src.member.infra.MemberRepository import MemberRepository
+from src.member.domain.model.member import Member
+from src.member.infra.member_repository import MemberRepository
 
 
 def test_get_by_id(session):
@@ -15,7 +15,7 @@ def test_get_by_id(session):
 
     repo = MemberRepository(session=session)
     actual = repo.get_by_id(member_id=member_id)
-    expected = model.Member(
+    expected = Member(
         member_id=member_id,
         nickname=nickname,
         password=password
@@ -25,11 +25,34 @@ def test_get_by_id(session):
 
 def test_add(session):
     repo = MemberRepository(session=session)
-    member = model.Member(member_id="member-1", nickname="jack", password="123qwe")
+    member = Member(member_id="member-1", nickname="jack", password="123qwe")
     repo.add(member)
 
     actual = repo.get_by_id(member_id=member.member_id)
     expected = member
     assert_that(actual).is_equal_to(expected)
 
+
+def test_exists_with_exist_nickname(session):
+    member_id = 'member-1'
+    nickname = 'jack'
+    password = '123qwe'
+    session.execute(
+        "INSERT INTO members ('member_id', 'nickname', 'password') VALUES "
+        f"(\'{member_id}\', \'{nickname}\', \'{password}\')"
+    )
+
+    repo = MemberRepository(session=session)
+    actual = repo.exists(nickname=nickname)
+    expected = True
+    assert_that(actual).is_equal_to(expected)
+
+
+def test_exists_with_non_exist_nickname(session):
+    nickname = 'jack'
+
+    repo = MemberRepository(session=session)
+    actual = repo.exists(nickname=nickname)
+    expected = False
+    assert_that(actual).is_equal_to(expected)
 
