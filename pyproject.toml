@@ -9,6 +9,7 @@ python = "^3.8"
 fastapi = "*"
 uvicorn = "*"
 sqlalchemy = "*"
+requests = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"

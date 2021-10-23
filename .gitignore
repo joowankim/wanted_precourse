@@ -253,3 +253,5 @@ cython_debug/
 
 poetry.lock
 /identifier.sqlite
+/tests/e2e/sql_app.db
+/sql_app.db
