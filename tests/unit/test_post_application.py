@@ -2,6 +2,7 @@ from assertpy import assert_that
 
 from src.post.application.post_application import PostApplication
 from src.post.domain.exception import NotExistPostException
+from src.post.domain.model.post import Post
 from src.post.domain.model.pre_published_post import PrePublishedPost
 
 
@@ -52,3 +53,44 @@ def test_list(bulletin_board):
 
     actual = application.list()
     assert_that(len(actual)).is_equal_to(4)
+
+
+def test_change_with_exist_post(bulletin_board):
+    application = PostApplication(board=bulletin_board)
+    author = "javkc"
+    pre_post = PrePublishedPost(title="title", content="content")
+    application.write(author=author, pre_post=pre_post)
+
+    post = application.list()[0]
+    changed = Post(post_id=post.post_id, author=author, title="asdfsafd", content="asdfafs")
+    application.change(post_id=changed.post_id, author=changed.author, title=changed.title, content=changed.content)
+
+    actual = application.get(post_id=changed.post_id)
+    expected = changed
+    assert_that(actual.title).is_equal_to(expected.title)
+    assert_that(actual.content).is_equal_to(expected.content)
+
+
+def test_change_with_changed_include_none(bulletin_board):
+    application = PostApplication(board=bulletin_board)
+    author = "javkc"
+    pre_post = PrePublishedPost(title="title", content="content")
+    application.write(author=author, pre_post=pre_post)
+
+    post = application.list()[0]
+    changed = Post(post_id=post.post_id, author=author, title="asdfsafd", content=None)
+    application.change(post_id=changed.post_id, author=changed.author, title=changed.title, content=changed.content)
+
+    actual = application.get(post_id=changed.post_id)
+    expected = changed
+    assert_that(actual.title).is_equal_to(expected.title)
+    assert_that(actual.content).is_not_none()
+
+
+def test_change_with_not_exist_post(bulletin_board):
+    application = PostApplication(board=bulletin_board)
+    changed = Post(post_id="post-1", author="adsf", title="asdfsafd", content="asdfafs")
+    assert_that(application.change)\
+        .raises(NotExistPostException)\
+        .when_called_with(post_id=changed.post_id, author=changed.author, title=changed.title, content=changed.content)
+

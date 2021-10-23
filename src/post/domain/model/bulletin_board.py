@@ -1,9 +1,10 @@
 import uuid
 from typing import List
 
-from src.post.domain.exception import NotExistPostException
+from src.post.domain.exception import NotExistPostException, NonAuthorException
 from src.post.domain.model.post import Post
 from src.post.domain.model.pre_published_post import PrePublishedPost
+from src.post.infra.exception import DoesNotExistException
 from src.post.infra.post_repository import AbstractPostRepository
 
 
@@ -34,8 +35,19 @@ class BulletinBoard:
     def get_all_posts(self) -> List[Post]:
         return self.posts.get_all()
 
-    # def delete(self, post: Post) -> None:
-    #     del self.posts[post.post_id]
-
     def update(self, changed: Post) -> None:
-        self.posts.update_to(changed)
+        current = self.posts.get_by_id(post_id=changed.post_id)
+        if not current:
+            raise NotExistPostException
+        if current.author != changed.author:
+            raise NonAuthorException
+        latest = changed.apply_to(current)
+        self.posts.update_to(latest)
+
+    def delete(self, requester: str, post_id: str) -> None:
+        target = self.posts.get_by_id(post_id=post_id)
+        if not target:
+            raise NotExistPostException
+        if requester != target.author:
+            raise NonAuthorException
+        self.posts.delete(post_id=target.post_id)

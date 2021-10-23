@@ -31,3 +31,12 @@ class PostApplication:
 
     def list(self) -> List[DisplayedPost]:
         return [post.to_view_model() for post in self.board.get_all_posts()]
+
+    def change(self, post_id: str, author: str, title: str, content: str):
+        changed = Post(
+            post_id=post_id,
+            author=author,
+            title=title,
+            content=content
+        )
+        self.board.update(changed)

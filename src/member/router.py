@@ -10,11 +10,6 @@ router = APIRouter(
 )
 
 
-@router.get("/hello")
-def hello():
-    return "Hello member"
-
-
 def member_application(service: MemberService = Depends(member_service)):
     return MemberApplication(service=service)
 

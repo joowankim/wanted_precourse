@@ -10,6 +10,7 @@ from . import post, security, member
 from .config.db_config import engine, metadata
 from .config.table_mapper_config import start_mappers
 from .member.domain.exception import DuplicatedNicknameException
+from .post.domain.exception import NotExistPostException, NonAuthorException
 from .security.domain.exception import NotExistMemberException, IncorrectPasswordException, EmptyAuthTokenException
 
 metadata.create_all(bind=engine)
@@ -52,5 +53,15 @@ def jwt_error_handler(request: Request, exc: JWTError):
 
 
 @app.exception_handler(EmptyAuthTokenException)
-def jwt_error_handler(request: Request, exc: EmptyAuthTokenException):
+def empty_auth_token_handler(request: Request, exc: EmptyAuthTokenException):
+    return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+@app.exception_handler(NotExistPostException)
+def not_exist_post_exception_handler(request: Request, exc: NotExistPostException):
+    return JSONResponse(status_code=status.HTTP_404_NOT_FOUND)
+
+
+@app.exception_handler(NonAuthorException)
+def non_author_exception_handler(request: Request, exc: NonAuthorException):
     return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED)

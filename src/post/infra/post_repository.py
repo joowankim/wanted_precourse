@@ -5,6 +5,7 @@ from typing import List
 from sqlalchemy.orm import Session
 
 from src.post.domain.model.post import Post
+from src.post.infra.exception import DoesNotExistException
 
 
 class AbstractPostRepository(abc.ABC):
@@ -12,9 +13,9 @@ class AbstractPostRepository(abc.ABC):
     def add(self, post: Post):
         raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def exists(self, post_id: str) -> bool:
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def exists(self, post_id: str) -> bool:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def get_by_id(self, post_id: str) -> Post:
@@ -28,9 +29,9 @@ class AbstractPostRepository(abc.ABC):
     def update_to(self, changed: Post):
         raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def delete(self, post: Post):
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def delete(self, post_id: str):
+        raise NotImplementedError
 
 
 class PostRepository(AbstractPostRepository):
@@ -40,12 +41,12 @@ class PostRepository(AbstractPostRepository):
     def add(self, post: Post):
         self.session.add(post)
         self.session.commit()
-    #
-    # def exists(self, post_id: str) -> bool:
-    #     if self.session.query(Post).filter_by(post_id=post_id).first():
-    #         return True
-    #     else:
-    #         return False
+
+    def exists(self, post_id: str) -> bool:
+        if self.session.query(Post).filter_by(post_id=post_id).first():
+            return True
+        else:
+            return False
 
     def get_by_id(self, post_id: str) -> Post:
         return self.session.query(Post)\
@@ -56,9 +57,17 @@ class PostRepository(AbstractPostRepository):
         return list(self.session.query(Post).all())
 
     def update_to(self, changed: Post):
+        if not self.exists(changed.post_id):
+            raise DoesNotExistException
         self.session.query(Post)\
             .filter(Post.post_id == changed.post_id)\
             .update(asdict(changed))
         self.session.commit()
+
+    def delete(self, post_id: str):
+        post = self.session.query(Post).filter(Post.post_id == post_id).first()
+        self.session.delete(post)
+        self.session.commit()
+
 
 
