@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, Depends
 
-from src.member.application.member_application import MemberApplication, member_repository
+from src.member.application.member_application import MemberApplication, member_service
+from src.member.domain.model.member_service import MemberService
 from src.member.domain.model.membership_application import MembershipApplication
-from src.member.infra.member_repository import AbstractMemberRepository
 
 router = APIRouter(
     prefix="/members",
@@ -15,8 +15,8 @@ def hello():
     return "Hello member"
 
 
-def member_application(repository: AbstractMemberRepository = Depends(member_repository)):
-    return MemberApplication(repository=repository)
+def member_application(service: MemberService = Depends(member_service)):
+    return MemberApplication(service=service)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
