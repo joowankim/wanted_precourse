@@ -12,7 +12,10 @@ def test_authenticate_with_correct_login_info(member_service):
 
     authentication_service = AuthenticationService(member_service=member_service)
     login_info = LoginInfo(nickname=application.nickname, password=application.password)
-    authentication_service.authenticate(login_info)
+
+    actual = authentication_service.authenticate(login_info)
+    assert_that(actual.nickname).is_equal_to(application.nickname)
+    assert_that(actual.password).is_equal_to(application.password)
 
 
 def test_authenticate_with_not_exist_nickname(member_service):

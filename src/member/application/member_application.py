@@ -10,10 +10,13 @@ def member_repository(session: Session = Depends(db_session)):
     return MemberRepository(session=session)
 
 
+def member_service(repo: AbstractMemberRepository = Depends(member_repository)):
+    return MemberService(repo=repo)
+
+
 class MemberApplication:
-    def __init__(self, repository: AbstractMemberRepository = Depends(member_repository)):
-        self.repository = repository
+    def __init__(self, service: MemberService):
+        self.service = service
 
     def register_member(self, application: MembershipApplication):
-        member_service = MemberService(repo=self.repository)
-        member_service.register(application)
+        self.service.register(application)

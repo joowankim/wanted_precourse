@@ -5,8 +5,8 @@ from src.member.domain.model.member_service import MemberService
 from src.member.domain.model.membership_application import MembershipApplication
 
 
-def test_register_member(member_repo):
-    member_application = MemberApplication(repository=member_repo)
+def test_register_member(member_service):
+    member_application = MemberApplication(service=member_service)
     application = MembershipApplication(nickname="John", password="123qwe")
     member_application.register_member(application)
 
