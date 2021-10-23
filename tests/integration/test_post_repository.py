@@ -38,3 +38,20 @@ def test_get_all(session):
         Post(post_id='post-3', author='jack', title='sdafasdf', content='zxc content'),
     ]
     assert_that(actual).is_equal_to(expected)
+
+
+def test_update_to_with_changed(session):
+    session.execute(
+        "INSERT INTO posts (post_id, author, title, content) VALUES "
+        "('post-1', 'jack', 'json', 'json content'),"
+        "('post-2', 'join', 'qwertt', 'qwert content'),"
+        "('post-3', 'jack', 'sdafasdf', 'zxc content')"
+    )
+    repo = PostRepository(session=session)
+    changed = Post(post_id='post-1', author='jack', title='jsasdfasfdon', content='json content')
+    repo.update_to(changed)
+
+    actual = repo.get_by_id(post_id=changed.post_id)
+    expected = changed
+    assert_that(actual).is_equal_to(expected)
+

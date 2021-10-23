@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 from jose import JWTError
 from pydantic import ValidationError
 from starlette import status
@@ -18,6 +19,8 @@ app = FastAPI()
 app.include_router(post.router)
 app.include_router(member.router)
 app.include_router(security.router)
+
+add_pagination(app)
 
 
 @app.exception_handler(ValidationError)

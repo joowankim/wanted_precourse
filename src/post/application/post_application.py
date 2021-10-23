@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
@@ -5,6 +7,7 @@ from src.config.db_config import db_session
 from src.post.domain.model.bulletin_board import BulletinBoard
 from src.post.domain.model.post import Post
 from src.post.domain.model.pre_published_post import PrePublishedPost
+from src.post.domain.view_model.displayed_post import DisplayedPost
 from src.post.infra.post_repository import PostRepository, AbstractPostRepository
 
 
@@ -23,5 +26,8 @@ class PostApplication:
     def write(self, author: str, pre_post: PrePublishedPost):
         self.board.put(author=author, pre_post=pre_post)
 
-    def get(self, post_id: str) -> Post:
-        return self.board.details(post_id=post_id)
+    def get(self, post_id: str) -> DisplayedPost:
+        return self.board.details(post_id=post_id).to_view_model()
+
+    def list(self) -> List[DisplayedPost]:
+        return [post.to_view_model() for post in self.board.get_all_posts()]

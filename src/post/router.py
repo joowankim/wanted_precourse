@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends
+from fastapi_pagination import Page, paginate
 from starlette import status
 
 from src.post.application.post_application import PostApplication, bulletin_board
 from src.post.domain.model.bulletin_board import BulletinBoard
 from src.post.domain.model.pre_published_post import PrePublishedPost
+from src.post.domain.view_model.displayed_post import DisplayedPost
 from src.security.router import authorize
 
 router = APIRouter(
@@ -23,3 +25,16 @@ def write_post(
         author: str = Depends(authorize)
 ):
     application.write(author=author, pre_post=pre_post)
+
+
+@router.get("/{post_id}", status_code=status.HTTP_200_OK, response_model=DisplayedPost)
+def get_details(
+        post_id: str,
+        application: PostApplication = Depends(post_application)
+):
+    return application.get(post_id=post_id)
+
+
+@router.get("", status_code=status.HTTP_200_OK, response_model=Page[DisplayedPost])
+def get_posts(application: PostApplication = Depends(post_application)):
+    return paginate(application.list())

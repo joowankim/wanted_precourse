@@ -1,4 +1,5 @@
 import uuid
+from typing import List
 
 from src.post.domain.exception import NotExistPostException
 from src.post.domain.model.post import Post
@@ -30,11 +31,11 @@ class BulletinBoard:
         else:
             raise NotExistPostException
 
-    # def update(self, post: Post) -> None:
-    #     self.posts[post.post_id] = post
-    #
+    def get_all_posts(self) -> List[Post]:
+        return self.posts.get_all()
+
     # def delete(self, post: Post) -> None:
     #     del self.posts[post.post_id]
-    #
-    # def get_all_posts(self) -> List[Post]:
-    #     return list(self.posts.values())
+
+    def update(self, changed: Post) -> None:
+        self.posts.update_to(changed)
