@@ -1,1 +1,2 @@
 JWT_SECRET = "wanted"
+JWT_ALGORITHM = "HS256"

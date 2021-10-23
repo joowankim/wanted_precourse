@@ -36,3 +36,6 @@ class PostRepository(AbstractPostRepository):
             .filter_by(post_id=post_id)\
             .first()
 
+    def get_all(self):
+        return list(self.session.query(Post).all())
+

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi.params import Header
 from starlette import status
 
 from src.security.application.authentication_application import AuthenticationApplication, authentication_service
@@ -12,13 +13,15 @@ router = APIRouter(
 )
 
 
-@router.get("/hello")
-async def hello():
-    return "Hello security"
-
-
 def authentication_application(service: AuthenticationService = Depends(authentication_service)):
     return AuthenticationApplication(service=service)
+
+
+def authorize(
+        authorization: str = Header(None),
+        application: AuthenticationApplication = Depends(authentication_application)
+):
+    return application.decode(authorization)
 
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=License)

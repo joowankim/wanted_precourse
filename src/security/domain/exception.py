@@ -4,3 +4,7 @@ class NotExistMemberException(Exception):
 
 class IncorrectPasswordException(Exception):
     pass
+
+
+class EmptyAuthTokenException(Exception):
+    pass

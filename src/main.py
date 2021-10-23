@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from jose import JWTError
 from pydantic import ValidationError
 from starlette import status
 from starlette.requests import Request
@@ -8,7 +9,7 @@ from . import post, security, member
 from .config.db_config import engine, metadata
 from .config.table_mapper_config import start_mappers
 from .member.domain.exception import DuplicatedNicknameException
-from .security.domain.exception import NotExistMemberException, IncorrectPasswordException
+from .security.domain.exception import NotExistMemberException, IncorrectPasswordException, EmptyAuthTokenException
 
 metadata.create_all(bind=engine)
 start_mappers()
@@ -39,4 +40,14 @@ def not_exist_member_exception_handler(request: Request, exc: NotExistMemberExce
 
 @app.exception_handler(IncorrectPasswordException)
 def incorrect_password_exception_handler(request: Request, exc: IncorrectPasswordException):
+    return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+@app.exception_handler(JWTError)
+def jwt_error_handler(request: Request, exc: JWTError):
+    return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+@app.exception_handler(EmptyAuthTokenException)
+def jwt_error_handler(request: Request, exc: EmptyAuthTokenException):
     return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED)

@@ -1,0 +1,2 @@
+class NotExistPostException(Exception):
+    pass
