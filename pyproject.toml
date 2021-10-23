@@ -8,6 +8,7 @@ authors = ["Joowan Kim <rlawndhks217@gmail.com>"]
 python = "^3.8"
 fastapi = "*"
 uvicorn = "*"
+sqlalchemy = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"

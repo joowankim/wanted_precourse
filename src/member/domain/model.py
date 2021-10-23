@@ -1,6 +1,6 @@
 import uuid
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Optional
 
 from pydantic import BaseModel
 
@@ -11,10 +11,11 @@ class MembershipApplication:
     password: str
 
 
-class Member(BaseModel):
+@dataclass
+class Member:
     member_id: str
-    password: str
     nickname: str
+    password: str
 
 
 @dataclass(frozen=True)
