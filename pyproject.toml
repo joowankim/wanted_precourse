@@ -6,16 +6,16 @@ authors = ["Joowan Kim <rlawndhks217@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-fastapi = "*"
-uvicorn = "*"
-sqlalchemy = "*"
-requests = "*"
-python-jose = "*"
-fastapi-pagination = "*"
+fastapi = "0.70.0"
+uvicorn = "0.15.0"
+sqlalchemy = "1.4.26"
+requests = "2.26.0"
+python-jose = "3.3.0"
+fastapi-pagination = "0.9.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "*"
-assertpy = "*"
+pytest = "6.2.5"
+assertpy = "1.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
